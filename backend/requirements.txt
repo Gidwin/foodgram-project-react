@@ -1,0 +1,10 @@
+requests==2.26.0
+django==2.2.16
+djangorestframework==3.12.4
+PyJWT==2.1.0
+django-filter==2.0.0
+djangorestframework-simplejwt==4.7.2
+djoser==2.1.0
+psycopg2-binary==2.8.6
+Pillow==9.4.0
+django-cors-headers==3.14.0
