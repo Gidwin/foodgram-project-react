@@ -12,12 +12,14 @@ from .serializers import CustomUserSerializer, FollowSerializer
 
 
 class CustomUserViewSet(UserViewSet):
+
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
-    premissions_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class FollowViewSet(APIView):
+
     serializer_class = FollowSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = CustomPageNumberPagination
@@ -26,15 +28,15 @@ class FollowViewSet(APIView):
         user_id = self.kwargs.get('user_id')
         if user_id == request.user.id:
             return Response(
-                {'error': 'Подписываться на себя запрещено'},
+                {'error': 'Нельзя подписаться на себя'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         if Follow.objects.filter(
-            user=request.user,
-            author_id = user_id
+                user=request.user,
+                author_id=user_id
         ).exists():
             return Response(
-                {'error': 'Вы уже подписаны на этого пользователя'},
+                {'error': 'Вы уже подписаны на пользователя'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         author = get_object_or_404(User, id=user_id)
@@ -43,7 +45,7 @@ class FollowViewSet(APIView):
             author_id=user_id
         )
         return Response(
-            self.serializer_class(author, context={'request': request}),
+            self.serializer_class(author, context={'request': request}).data,
             status=status.HTTP_201_CREATED
         )
 
@@ -64,6 +66,7 @@ class FollowViewSet(APIView):
 
 
 class FollowListView(ListAPIView):
+
     serializer_class = FollowSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = CustomPageNumberPagination
