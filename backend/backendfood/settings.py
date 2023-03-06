@@ -26,9 +26,12 @@ SECRET_KEY = 'y3x2^90k@&-djhyfwz_ci2u)tcuzakvtx+1k(()m)6q+^q&vy='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
-
+CSRF_TRUSTED_ORIGINS = [
+    'http://*localhost',
+    'https://*localhost',
+]
 # Application definition
 
 INSTALLED_APPS = [
@@ -38,11 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'django_filters',
+    'corsheaders',
+    'djoser',
     'recipes',
     'users',
     'api',
-    'rest_framework',
-    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -126,12 +132,41 @@ USE_L10N = True
 
 USE_TZ = True
 
+STATIC_URL = "/backend_static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "backend_static")
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+MEDIA_URL = '/backend_media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'backend_media')
 
 
 AUTH_USER_MODEL = 'users.User'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 6
+}
+
+DJOSER = {
+    "LOGIN_FIELD": 'email',
+    "SEND_ACTIVATION_EMAIL": False,
+    'HIDE_USERS': False,
+    "SERIALIZERS": {
+        "user_create": "users.serializers.CustomUserCreateSerializer",
+        "user": "users.serializers.CustomUserSerializer",
+        "current_user": "users.serializers.CustomUserSerializer",
+    },
+    'PERMISSIONS': {
+        'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
+        'user_list': ['rest_framework.permissions.AllowAny']
+    },
+}
