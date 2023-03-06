@@ -21,6 +21,7 @@ from .serializers import (FavoriteSerializer, IngredientSerializer,
 
 
 class TagsViewSet(ReadOnlyModelViewSet):
+    pagination_class = None
     queryset = Tag.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = TagSerializer
@@ -32,6 +33,7 @@ class IngredientsViewSet(ReadOnlyModelViewSet):
     serializer_class = IngredientSerializer
     filter_backends = [IngredientSearchFilter]
     search_fields = ('^name',)
+    pagination_class = None
 
 
 class RecipeViewSet(ModelViewSet):
