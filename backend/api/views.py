@@ -20,6 +20,12 @@ from .serializers import (FavoriteSerializer, IngredientSerializer,
                           ShoppingCartSerializer, TagSerializer)
 
 
+SIZE = 24
+HEIGHT = 200
+WIDTH = 800
+SIZE_FONT = 16
+
+
 class TagsViewSet(ReadOnlyModelViewSet):
     pagination_class = None
     queryset = Tag.objects.all()
@@ -110,9 +116,9 @@ class RecipeViewSet(ModelViewSet):
         response['Content-Disposition'] = ('attachment; '
                                            'filename="shopping_list.pdf"')
         page = canvas.Canvas(response)
-        page.setFont('Handicraft', size=24)
-        page.drawString(200, 800, 'Список покупок')
-        page.setFont('Handicraft', size=16)
+        page.setFont('Handicraft', SIZE)
+        page.drawString(HEIGHT, WIDTH, 'Список покупок')
+        page.setFont('Handicraft', SIZE_FONT)
         height = 750
         for i, (name, data) in enumerate(final_list.items(), 1):
             page.drawString(75, height, (f'{i}. {name} - {data["amount"]} '

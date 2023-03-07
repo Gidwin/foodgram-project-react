@@ -1,4 +1,4 @@
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 from users.models import User
@@ -45,6 +45,7 @@ class Tag(models.Model):
     class Meta:
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
+        ordering = ['name']
 
     def __str__(self):
         return self.name
@@ -83,7 +84,12 @@ class Recipe(models.Model):
         'Время приготовления',
         validators=(
             MinValueValidator(
-                1, message='Время должно быть больше 1 минуты'),),
+                1, message='Время должно быть больше 1 минуты'),
+            MaxValueValidator(
+                500,
+                message='Долгое время приготовления!',
+            ),
+        ),
     )
     pub_date = models.DateTimeField(
         'Дата публикации',
@@ -116,10 +122,16 @@ class IngredientAmount(models.Model):
         'Количество ингредиента',
         validators=(
             MinValueValidator(
-                1, message='Количество не может быть меньше 1'),),
+                1, message='Количество не может быть меньше 1'),
+            MaxValueValidator(
+                1500,
+                message='Слишком много ингридиента!',
+            ),
+        ),
     )
 
     class Meta:
+        ordering = ['recipe']
         verbose_name = 'Количество ингредиента'
         verbose_name_plural = 'Количество ингредиентов'
         constraints = (
@@ -128,6 +140,9 @@ class IngredientAmount(models.Model):
                 name='unique ingredient amount',
             ),
         )
+
+    def __str__(self):
+        return f'{self.amount} - {self.ingredient}'
 
 
 class Favorite(models.Model):
@@ -145,12 +160,16 @@ class Favorite(models.Model):
     )
 
     class Meta:
+        ordering = ['recipe']
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранные'
         constraints = [
             models.UniqueConstraint(fields=['user', 'recipe'],
                                     name='unique favorite')
         ]
+
+    def __str__(self):
+        return f'{self.user} - {self.recipe}'
 
 
 class ShoppingCart(models.Model):
@@ -168,9 +187,13 @@ class ShoppingCart(models.Model):
     )
 
     class Meta:
+        ordering = ['recipe']
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзина'
         constraints = [
             models.UniqueConstraint(fields=['user', 'recipe'],
                                     name='unique shopping cart')
         ]
+
+    def __str__(self):
+        return f'{self.user} - {self.recipe}'

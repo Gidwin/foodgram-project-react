@@ -97,14 +97,14 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         ingredients = data['ingredients']
-        ingredients_list = []
+        ingredients_list = set()
         for ingredient in ingredients:
             ingredient_id = ingredient['id']
             if ingredient_id in ingredients_list:
                 raise serializers.ValidationError({
                     'ingredients': 'Ингредиенты должны быть уникальными!'
                 })
-            ingredients_list.append(ingredient_id)
+            ingredients_list.add(ingredient_id)
             amount = ingredient['amount']
             if int(amount) <= 0:
                 raise serializers.ValidationError({
@@ -116,13 +116,11 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({
                 'tags': 'Нужно выбрать хотя бы один тэг!'
             })
-        tags_list = []
-        for tag in tags:
-            if tag in tags_list:
-                raise serializers.ValidationError({
-                    'tags': 'Тэги должны быть уникальными!'
-                })
-            tags_list.append(tag)
+        tags_list = set()
+        if len(tags) > len(tags_list):
+            raise serializers.ValidationError({
+                'tags': 'Тэги должны быть уникальными!'
+            })
 
         cooking_time = data['cooking_time']
         if int(cooking_time) <= 0:
@@ -133,11 +131,14 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def create_ingredients(ingredients, recipe):
-        for ingredient in ingredients:
-            IngredientAmount.objects.create(
+        ingredient_amounts = [
+            IngredientAmount(
                 recipe=recipe, ingredient=ingredient['id'],
                 amount=ingredient['amount']
             )
+            for ingredient in ingredients
+        ]
+        IngredientAmount.objects.bulk_create(ingredient_amounts)
 
     @staticmethod
     def create_tags(tags, recipe):
