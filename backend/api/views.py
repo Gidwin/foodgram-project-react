@@ -21,9 +21,12 @@ from .serializers import (FavoriteSerializer, IngredientSerializer,
 
 
 SIZE = 24
-HEIGHT = 200
-WIDTH = 800
+HEIGHT = 800
+WIDTH = 200
 SIZE_FONT = 16
+NEW_HEIGHT = 750
+INDENT_LEFT = 75
+LOWER_VALUE = 25
 
 
 class TagsViewSet(ReadOnlyModelViewSet):
@@ -117,13 +120,13 @@ class RecipeViewSet(ModelViewSet):
                                            'filename="shopping_list.pdf"')
         page = canvas.Canvas(response)
         page.setFont('Handicraft', SIZE)
-        page.drawString(HEIGHT, WIDTH, 'Список покупок')
+        page.drawString(WIDTH, HEIGHT, 'Список покупок')
         page.setFont('Handicraft', SIZE_FONT)
-        height = 750
+        height = NEW_HEIGHT
         for i, (name, data) in enumerate(final_list.items(), 1):
-            page.drawString(75, height, (f'{i}. {name} - {data["amount"]} '
+            page.drawString(INDENT_LEFT, height, (f'{i}. {name} - {data["amount"]} '
                                          f'{data["measurement_unit"]}'))
-            height -= 25
+            height -= LOWER_VALUE
         page.showPage()
         page.save()
         return response
