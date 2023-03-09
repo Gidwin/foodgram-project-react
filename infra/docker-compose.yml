@@ -17,10 +17,6 @@ services:
     env_file:
       - ./.env
 
-  frontend:
-    image: gidwin/food_front:latest
-    volumes:
-      - ../frontend/:/app/result_build/
   nginx:
     image: nginx:1.19.3
     ports:
@@ -32,7 +28,12 @@ services:
       - static_value:/var/html/backend_static/
       - media_value:/var/html/backend_media/
     depends_on:
-      - web
+      - frontend
+
+  frontend:
+    image: gidwin/food_front:latest
+    volumes:
+      - ../frontend/:/app/result_build/
 
   volumes:
   postgresql_db:
