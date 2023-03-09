@@ -41,7 +41,7 @@ jobs:
       - name: Push to Docker Hub Fronted image
         uses: docker/build-push-action@v2
         with:
-          context: ./fronted
+          context: ./frontend
           push: true
           tags: gidwin/food_front:latest
 
