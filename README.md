@@ -39,3 +39,6 @@ python manage.py migrate
 ```bash
 python manage.py runserver
 ```
+
+ip -- http://158.160.24.80/
+админка admin
