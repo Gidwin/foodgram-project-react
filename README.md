@@ -41,4 +41,4 @@ python manage.py runserver
 ```
 
 ip -- http://158.160.24.80/
-админка admin
+админка лог admin@admin.com - пас admin
