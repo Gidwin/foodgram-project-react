@@ -110,6 +110,10 @@ class RecipeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                     'amount': 'Количество ингредиента должно быть больше нуля!'
                 })
+            if int(amount) >= 15000:
+                raise serializers.ValidationError({
+                    'amount': 'Количество ингридиента не должно быть больше 15000'
+                })
 
         tags = data['tags']
         if not tags:
