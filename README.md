@@ -39,6 +39,35 @@ python manage.py migrate
 ```bash
 python manage.py runserver
 ```
+## Запуск проекта в Docker контейнере
+* Установите Docker.
 
+Параметры запуска описаны в файлах `docker-compose.yml` и `nginx.conf` которые находятся в директории `infra/`.
+При необходимости добавьте/измените адреса проекта в файле `nginx.conf`
+
+* Запустите docker compose:
+```bash
+docker-compose up -d --build
+```
+  > После сборки появляются 3 контейнера:
+  > 1. контейнер базы данных **db**
+  > 2. контейнер приложения **backend**
+  > 3. контейнер web-сервера **nginx**
+* Примените миграции:
+```bash
+docker-compose exec backend python manage.py migrate
+```
+* Загрузите ингредиенты:
+```bash
+docker-compose exec backend python manage.py load_inredient
+```
+* Создайте администратора:
+```bash
+docker-compose exec backend python manage.py createsuperuser
+```
+* Соберите статику:
+```bash
+docker-compose exec backend python manage.py collectstatic --noinput
+```
 ip -- http://158.160.24.80/
 админка лог admin@admin.com - пас admin

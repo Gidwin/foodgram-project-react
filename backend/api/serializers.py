@@ -130,6 +130,10 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({
                 'cooking_time': 'Время приготовления должно быть больше 0!'
             })
+        if int(cooking_time) >= 10080:
+            raise serializers.ValidationError({
+                'cooking_time': 'Время приготовления должно быть меньше недели!'
+            })
         return data
 
     @staticmethod
