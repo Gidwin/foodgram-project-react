@@ -36,10 +36,9 @@ services:
   frontend:
     image: gidwin/food_front:latest
     volumes:
-      - results:../frontend/:/app/result_build/
+      - ../frontend/:/app/result_build/
 
-  volumes:
+volumes:
   postgres_db:
   static_value:
   media_value:
-  results:
