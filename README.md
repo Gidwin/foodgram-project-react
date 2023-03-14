@@ -80,8 +80,7 @@ docker-compose exec web python manage.py createsuperuser
 ```bash
 docker-compose exec web python manage.py collectstatic --noinput
 ```
-ip -- http://158.160.24.80/
-админка лог admin@admin.com - пас admin
+
 
 ## Автор
 [Лежакин Н.С.](https://github.com/Gidwin) - Python разработчик. Разработал бэкенд и деплой для сервиса Foodgram.
